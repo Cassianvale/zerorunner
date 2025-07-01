@@ -1,8 +1,7 @@
+# -*- coding: utf-8 -*-
 import base64
-
-from Cryptodome import Random
-from Cryptodome.Cipher import PKCS1_v1_5
-from Cryptodome.PublicKey import RSA
+from cryptography.hazmat.primitives.asymmetric import rsa, padding
+from cryptography.hazmat.primitives import serialization, hashes
 
 PUBLIC_KEY = """-----BEGIN PUBLIC KEY-----
 MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC2YZVJzRrn1kyJHZS+7O5/oteO
@@ -33,13 +32,26 @@ def generate_secret_key():
     公钥私钥生成
     :return:
     """
-    random_generator = Random.new().read
-    rsa = RSA.generate(1024, random_generator)
-    private_key = rsa.exportKey()
-    public_key = rsa.publickey().exportKey()
-    print(private_key.decode('utf8'))
-    print(public_key.decode('utf8'))
-    return private_key.decode('utf8'), public_key.decode('utf8')
+    private_key = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=1024
+    )
+    
+    private_pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+    
+    public_key = private_key.public_key()
+    public_pem = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+    
+    print(private_pem.decode('utf8'))
+    print(public_pem.decode('utf8'))
+    return private_pem.decode('utf8'), public_pem.decode('utf8')
 
 
 def encrypt_rsa_password(password):
@@ -49,10 +61,12 @@ def encrypt_rsa_password(password):
     :return:
     """
     try:
-        public_key = RSA.import_key(PUBLIC_KEY)
-        cipher = PKCS1_v1_5.new(public_key)
-        text = cipher.encrypt(password.encode('utf8'))
-        return base64.b64encode(text)
+        public_key = serialization.load_pem_public_key(PUBLIC_KEY.encode('utf8'))
+        encrypted = public_key.encrypt(
+            password.encode('utf8'),
+            padding.PKCS1v15()
+        )
+        return base64.b64encode(encrypted).decode('utf-8')
     except Exception as err:
         print(err)
         return password
@@ -65,11 +79,17 @@ def decrypt_rsa_password(password):
     :return:
     """
     try:
-        private_key = RSA.import_key(PRIVATE_KEY)
-        cipher = PKCS1_v1_5.new(private_key)
-        text = cipher.decrypt(base64.b64decode(password), b'')
-        return text.decode()
+        private_key = serialization.load_pem_private_key(
+            PRIVATE_KEY.encode('utf8'),
+            password=None
+        )
+        decrypted = private_key.decrypt(
+            base64.b64decode(password),
+            padding.PKCS1v15()
+        )
+        return decrypted.decode('utf8')
     except Exception as err:
+        print(f"解密错误: {err}")
         return password
 
 

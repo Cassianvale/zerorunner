@@ -3,9 +3,8 @@
 from contextlib import asynccontextmanager
 
 import click
-import uvicorn
 from fastapi import FastAPI, Depends
-
+from granian import Granian
 from autotest.db.my_redis import redis_pool
 from autotest.init.cors import init_cors
 from autotest.init.dependencies import login_verification
@@ -23,9 +22,11 @@ async def start_app(app: FastAPI):
     init_logger()
     logger.info("日志初始化成功！！!")  # 初始化日志
     redis_pool.init_by_config(config=config)
+    logger.info("Redis连接池初始化成功！！!")
     yield
 
-    await redis_pool.redis.close()
+    if redis_pool.redis:
+        await redis_pool.redis.close()
 
 
 def create_app():
@@ -51,6 +52,14 @@ def create_app():
 
 app = create_app()
 
-# gunicorn main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8101
-if __name__ == '__main__':
-    uvicorn.run(app='main:app', host="127.0.0.1", port=9101, reload=True)
+# granian --interface asgi --workers 2 --http2 --host 0.0.0.0 --port 9101 main:app
+# Create an instance of the Granian server
+if __name__ == "__main__":
+    Granian(
+        "main:app",
+        interface="asgi",
+        address="0.0.0.0",
+        port=9101,
+        reload=True,
+    ).serve()
+

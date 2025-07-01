@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 # @author: xiaobai
 import typing
+from typing import Optional, List
 
 from pydantic import BaseModel, Field
+from autotest.utils.des import decrypt_rsa_password
 
 from autotest.schemas.base import BaseSchema
-from autotest.utils.des import decrypt_rsa_password
 
 
 class UserIn(BaseModel):
@@ -18,7 +19,7 @@ class UserIn(BaseModel):
     avatar: str = Field(None, description='头像')
     tags: typing.List = Field(None, description='标签')
     roles: typing.List = Field(None, description='权限')
-    password: str = Field(description='标签', default=decrypt_rsa_password("123456"))
+    password: str = Field(description='标签', default="123456")
 
 
 class UserUpdate(BaseModel):
@@ -30,12 +31,13 @@ class UserDel(BaseModel):
 
 
 class UserQuery(BaseSchema):
-    username: str = Field(None, description='用户名')
-    nickname: str = Field(None, description='昵称')
-    user_ids: typing.List[int] = Field(None, description='用户id')
+    username: Optional[str] = Field(None, description='用户名')
+    nickname: Optional[str] = Field(None, description='昵称')
+    user_ids: Optional[List[int]] = Field(None, description='用户id')
 
-    class Config:
-        orm_mode = True  # 是否使用orm模型(个人理解: 放行,不验证)
+    model_config = {
+        "from_attributes": True # 是否使用orm模型
+    }
 
 
 class UserLogin(BaseModel):

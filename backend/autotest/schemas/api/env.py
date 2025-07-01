@@ -1,4 +1,5 @@
 import typing
+from typing import Optional, List, Union
 
 from pydantic import BaseModel, Field
 
@@ -8,10 +9,10 @@ from autotest.schemas.base import BaseSchema
 class EnvQuery(BaseSchema):
     """查询参数序列化"""
 
-    id: int = Field(None, description="id")
-    ids: typing.List[typing.Union[int, str]] = Field(None, description="ids")
-    name: str = Field(None, description="环境名")
-    created_by_name: str = Field(None, description="创建人")
+    id: Optional[int] = Field(None, description="id")
+    ids: Optional[List[Union[int, str]]] = Field(None, description="ids")
+    name: Optional[str] = Field(None, description="环境名")
+    created_by_name: Optional[str] = Field(None, description="创建人")
 
 
 class EnvListSchema(BaseModel):

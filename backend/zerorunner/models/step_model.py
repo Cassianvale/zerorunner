@@ -2,7 +2,7 @@
 # @author: xiaobai
 import typing
 
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, model_validator
 
 from zerorunner.models.base import MethodEnum, Url, Headers, Cookies, Verify, VariablesMapping, ParametersMapping, \
     Export, BaseUrl, FunctionsMapping
@@ -29,7 +29,7 @@ class ExtractData(BaseModel):
     """提取模型"""
     name: str = Field("", description="提取变量名称")
     path: str = Field("", description="提取路径")
-    continue_extract = Field(False, description="是否继续提取")
+    continue_extract: bool = Field(False, description="是否继续提取")
     continue_index: int = Field(0, description="继续提取下标")
     extract_type: str = Field("", description="提取类型 jmespath jsonpath")
 
@@ -60,10 +60,10 @@ class TRequest(BaseModel):
     verify: Verify = Field(False, description="开启验证")
     upload: typing.Dict = Field({}, description="上传文件")  # used for upload files
 
-    def dict(self, *args, **kwargs):
+    def model_dump(self, *args, **kwargs):
         if "by_alias" not in kwargs:
             kwargs["by_alias"] = True
-        return super().dict(*args, **kwargs)
+        return super().model_dump(*args, **kwargs)
 
 
 class TSqlRequest(BaseModel):
@@ -101,8 +101,9 @@ class TIFRequest(BaseModel):
     expect: str = Field("", description="对比值")
     remarks: str = Field("", description="备注")
 
-    class Config:
-        extra = "forbid"
+    model_config = {
+        "extra": "forbid"
+    }
 
 
 class TWaitRequest(BaseModel):
@@ -164,7 +165,8 @@ class TStep(TStepBase):
     request: TStepRequest = Field(None, description="请求信息", discriminator="request_type_")
     children_steps: typing.List['TStep'] = Field([], description="子步骤")
 
-    @root_validator(pre=True)
+    @model_validator(mode='before')
+    @classmethod
     def insert_request_type(cls, values):
         request = values.get('request', {})
         step_type = values.get('step_type', None)

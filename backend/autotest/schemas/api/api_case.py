@@ -1,5 +1,6 @@
 import typing
-from pydantic import root_validator, BaseModel, Field
+from typing import Optional, List
+from pydantic import BaseModel, Field, model_validator
 
 from autotest.schemas.api.api_info import ApiBaseSchema, ApiInfoIn
 from autotest.schemas.base import BaseSchema
@@ -8,18 +9,18 @@ from autotest.schemas.step_data import TStepData
 
 class ApiCaseQuery(BaseSchema):
     """用例查询"""
-    id: int = Field(None, description="")
-    ids: typing.List[int] = Field(None, description="")
-    name: str = Field(None, description="")
-    module_name: str = Field(None, description="")
-    project_name: str = Field(None, description="")
-    project_id: int = Field(None, description="项目id")
-    project_ids: typing.List[int] = Field(None, description="项目ids")
-    order_field: str = Field(None, description="")
-    created_by: int = Field(None, description="")
-    created_by_name: str = Field(None, description="")
-    suite_type: int = Field(None, description="")
-    user_ids: typing.List[int] = Field(None, description="user ids")
+    id: Optional[int] = Field(None, description="")
+    ids: Optional[List[int]] = Field(None, description="")
+    name: Optional[str] = Field(None, description="")
+    module_name: Optional[str] = Field(None, description="")
+    project_name: Optional[str] = Field(None, description="")
+    project_id: Optional[int] = Field(None, description="项目id")
+    project_ids: Optional[List[int]] = Field(None, description="项目ids")
+    order_field: Optional[str] = Field(None, description="")
+    created_by: Optional[int] = Field(None, description="")
+    created_by_name: Optional[str] = Field(None, description="")
+    suite_type: Optional[int] = Field(None, description="")
+    user_ids: Optional[List[int]] = Field(None, description="user ids")
 
 
 class ApiCaseIdsQuery(BaseSchema):
@@ -37,7 +38,8 @@ class ApiCaseListSchema(BaseSchema):
     config_id: int = Field(None, description="")
     run_status: str = Field(None, description="")
 
-    @root_validator
+    @model_validator(mode='before')
+    @classmethod
     def root_validator(cls, data):
         if 'include' in data:
             data['include'] = list(map(int, data['include'].split(','))) if data['include'] else []

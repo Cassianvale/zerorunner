@@ -1,4 +1,5 @@
 import typing
+from typing import Optional, List
 
 from pydantic import Field, BaseModel
 from autotest.schemas.base import BaseSchema
@@ -21,16 +22,16 @@ class ModuleIn(BaseModel):
 class ModuleQuery(BaseSchema):
     """查询参数序列化"""
 
-    id: int = Field(None, description="id")
-    ids: typing.List = Field(None, description="id 列表")
-    project_ids: typing.List = Field(None, description="project 列表")
-    user_ids: typing.List = Field(None, description="user 列表")
-    name: str = Field(None, description="项目名称")
-    project_name: str = Field(None, description="项目名称")
-    project_id: int = Field(None, description="项目id")
-    order_field: str = Field(None, description="排序字段")
-    sort_type: str = Field(None, description="排序类型")
-    created_by_name: str = Field(None, description="创建人名称")
+    id: Optional[int] = Field(None, description="id")
+    ids: Optional[List[int]] = Field(None, description="id 列表")
+    project_ids: Optional[List[int]] = Field(None, description="project 列表")
+    user_ids: Optional[List[int]] = Field(None, description="user 列表")
+    name: Optional[str] = Field(None, description="项目名称")
+    project_name: Optional[str] = Field(None, description="项目名称")
+    project_id: Optional[int] = Field(None, description="项目id")
+    order_field: Optional[str] = Field(None, description="排序字段")
+    sort_type: Optional[str] = Field(None, description="排序类型")
+    created_by_name: Optional[str] = Field(None, description="创建人名称")
 
 
 class ModuleId(BaseSchema):

@@ -7,12 +7,12 @@ fi
 
 if [ $1 = "app" ]; then
     echo "start app"
-    /usr/local/bin/python -m gunicorn main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:$port
+    /usr/local/bin/python -m granian --interface asgi main:app --workers 2 --bind 0.0.0.0:$port
 fi
 
 if [ $1 = "celery-worker" ]; then
     echo "start celery worker"
-     /usr/local/bin/python -m celery -A celery_worker.worker.celery worker --pool=gevent -c 10 -l INFO
+     /usr/local/bin/python -m celery -A celery_worker.worker.celery worker -l INFO
 fi
 
 if [ $1 = "celery-beat" ]; then

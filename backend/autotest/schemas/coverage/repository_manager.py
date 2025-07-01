@@ -1,6 +1,8 @@
+from typing import Optional, List
+
 from pydantic import BaseModel, Field
 
 
 class RepositoryListQuery(BaseModel):
-    id: int = Field(None, description="id")
-    name: str = Field(None, description="name")
+    id: Optional[int] = Field(None, description="id")
+    name: Optional[str] = Field(None, description="name")

@@ -1,4 +1,5 @@
 import typing
+from typing import Optional, List, Union
 
 from pydantic import BaseModel, Field
 
@@ -8,19 +9,19 @@ from autotest.schemas.base import BaseSchema
 class TestReportQuery(BaseSchema):
     """测试报告查询"""
 
-    id: int = Field(None, description="")
-    ids: typing.List[int] = Field(None, description="")
-    project_name: str = Field(None, description="")
-    project_id: int = Field(None, description="")
-    module_id: int = Field(None, description="")
-    exec_user_name: str = Field(None, description="")
-    min_and_max: str = Field(None, description="")
-    report_type: str = Field(None, description="")
-    name: str = Field(None, description="")
-    user_ids: typing.List[int] = Field(None, description="")
-    created_by: int = Field(None, description="")
-    project_ids: typing.List[int] = Field(None, description="")
-    case_id: typing.Union[str, int] = Field(None, description="case_id")
+    id: Optional[int] = Field(None, description="")
+    ids: Optional[List[int]] = Field(None, description="")
+    project_name: Optional[str] = Field(None, description="")
+    project_id: Optional[int] = Field(None, description="")
+    module_id: Optional[int] = Field(None, description="")
+    exec_user_name: Optional[str] = Field(None, description="")
+    min_and_max: Optional[str] = Field(None, description="")
+    report_type: Optional[str] = Field(None, description="")
+    name: Optional[str] = Field(None, description="")
+    user_ids: Optional[List[int]] = Field(None, description="")
+    created_by: Optional[int] = Field(None, description="")
+    project_ids: Optional[List[int]] = Field(None, description="")
+    case_id: Optional[Union[str, int]] = Field(None, description="case_id")
 
 
 class TestReportSaveSchema(BaseModel):

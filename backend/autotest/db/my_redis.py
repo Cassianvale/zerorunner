@@ -9,7 +9,8 @@ from redis.asyncio import Redis
 from redis import Redis as SyncRedis, DataError
 from redis.typing import KeyT, FieldT, EncodableT, AnyFieldT
 
-from config import config
+# 移除模块级别导入
+# from config import config
 
 
 class MyAsyncRedis(Redis):
@@ -146,5 +147,5 @@ class RedisPool:
         return self.redis
 
 
+# 只创建实例，不初始化
 redis_pool = RedisPool()
-redis_pool.init_by_config(config=config)

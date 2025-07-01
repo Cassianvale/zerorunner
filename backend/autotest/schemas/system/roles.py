@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # @author: xiaobai
-from pydantic import BaseModel, Field, root_validator
+from pydantic import BaseModel, Field, model_validator
 import typing
 from autotest.schemas.base import BaseSchema
 
@@ -13,7 +13,8 @@ class RoleIn(BaseModel):
     description: str = Field(None, description="描述")
     status: int = Field(default=10, description="状态 10 启用 20 禁用")
 
-    @root_validator(pre=True)
+    @model_validator(mode='before')
+    @classmethod
     def root_validator(cls, data: typing.Dict[typing.Text, typing.Any]):
         menus = data.get("menus", [])
         if menus:

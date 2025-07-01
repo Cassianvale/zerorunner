@@ -1,7 +1,8 @@
 import json
 import typing
+from typing import Optional, List
 
-from pydantic import root_validator, BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from autotest.schemas.base import BaseSchema
 from autotest.schemas.step_data import TStepData, TRequestData, ApiBaseSchema
@@ -12,22 +13,22 @@ from zerorunner.models.step_model import ExtractData
 class ApiQuery(BaseSchema):
     """查询参数序列化"""
 
-    id: int = Field(None, description="id")
-    ids: typing.List = Field(None, description="ids")
-    name: str = Field(None, description="接口名")
-    api_status: int = Field(None, description="接口状态")
-    api_type: int = Field(None, description="api 类型")
-    code: str = Field(None, description="接口code")
-    sort_type: str = Field(None, description="排序类型")
-    priority: int = Field(None, description="优先级")
-    project_id: int = Field(None, description="项目id")
-    project_ids: typing.List[int] = Field(None, description="项目ids")
-    module_id: int = Field(None, description="模块id")
-    module_ids: typing.List[int] = Field(None, description="ids")
-    project_name: str = Field(None, description="项目名")
-    order_field: str = Field(None, description="排序字段")
-    created_by: int = Field(None, description="创建人id")
-    created_by_name: str = Field(None, description="创建人")
+    id: Optional[int] = Field(None, description="id")
+    ids: Optional[List] = Field(None, description="ids")
+    name: Optional[str] = Field(None, description="接口名")
+    api_status: Optional[int] = Field(None, description="接口状态")
+    api_type: Optional[int] = Field(None, description="api 类型")
+    code: Optional[str] = Field(None, description="接口code")
+    sort_type: Optional[str] = Field(None, description="排序类型")
+    priority: Optional[int] = Field(None, description="优先级")
+    project_id: Optional[int] = Field(None, description="项目id")
+    project_ids: Optional[List[int]] = Field(None, description="项目ids")
+    module_id: Optional[int] = Field(None, description="模块id")
+    module_ids: Optional[List[int]] = Field(None, description="ids")
+    project_name: Optional[str] = Field(None, description="项目名")
+    order_field: Optional[str] = Field(None, description="排序字段")
+    created_by: Optional[int] = Field(None, description="创建人id")
+    created_by_name: Optional[str] = Field(None, description="创建人")
 
 
 class ApiId(BaseModel):
@@ -78,7 +79,8 @@ class ApiRunBatchSchema(BaseModel):
     ex_user_id: int = Field(None, description="id")
     testcase_dir_path: str = Field(None, description="id")
 
-    @root_validator(pre=True)
+    @model_validator(mode='before')
+    @classmethod
     def root_validator(cls, data):
         if not data.get("base_url", None):
             data['base_url'] = ""

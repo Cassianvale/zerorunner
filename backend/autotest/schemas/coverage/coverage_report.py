@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional, List
 
 from pydantic import Field, BaseModel
 
@@ -13,8 +14,8 @@ class CovElTypeEenum(str, Enum):
 
 
 class CoverageListQuery(BaseModel):
-    name: str = Field(None, description="name")
-    id: int = Field(None, description="id")
+    name: Optional[str] = Field(None, description="name")
+    id: Optional[int] = Field(None, description="id")
 
 
 class CoverageReportQuery(BaseModel):

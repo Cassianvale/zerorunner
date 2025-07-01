@@ -3,7 +3,7 @@
 from datetime import datetime
 import typing
 
-from pydantic.main import BaseModel, Field
+from pydantic import BaseModel, Field
 
 
 class TaskRecordQuery(BaseModel):
